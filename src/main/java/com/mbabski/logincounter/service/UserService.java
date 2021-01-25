@@ -6,6 +6,7 @@ import com.mbabski.logincounter.exception.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
+@Slf4j
 public class UserService {
 
 	private static final String BASE_URL = "https://api.github.com/users/";
@@ -24,8 +26,9 @@ public class UserService {
 
 	public ResponseDTO getResponseDto(String login) {
 		requestCountingService.incrementRequestCount(login);
+		log.info(String.format("Request for user with login '%s'", login));
 		UserDTO userDTO = getUserDTO(login);
-		String calculations = calculationService.calculate(userDTO.getFollowers(), userDTO.getPublicRepos());
+		String calculations = calculationService.calculate(userDTO);
 		return new ResponseDTO(userDTO, calculations);
 	}
 
@@ -34,6 +37,7 @@ public class UserService {
 			ResponseEntity<UserDTO> response = new RestTemplate().getForEntity(BASE_URL + login, UserDTO.class);
 			return response.getBody();
 		} catch (HttpClientErrorException.NotFound e) {
+			log.error(String.format("User with login '%s' does not exist", login));
 			throw new UserNotFoundException(login);
 		}
 	}

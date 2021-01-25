@@ -1,5 +1,7 @@
 package com.mbabski.logincounter.service;
 
+import com.mbabski.logincounter.dto.UserDTO;
+import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +19,10 @@ public class CalculationServiceTest {
 	@Test
 	public void shouldReturnErrorMessageForUserWithNoFollowers(){
 		//given
-		int followers = 0;
-		int publicRepos = 2;
+		UserDTO userDTO = new UserDTO(1, "jan", "Jan", "User","fakeUrl", LocalDateTime.now(), 0, 2);
 
 		//when
-		String calculationMessage = calculationService.calculate(followers, publicRepos);
+		String calculationMessage = calculationService.calculate(userDTO);
 
 		//then
 		Assertions.assertThat(calculationMessage).isEqualTo(CalculationService.ERROR_MESSAGE);
@@ -30,11 +31,10 @@ public class CalculationServiceTest {
 	@Test
 	public void shouldCalculateCorrectResultForUserWithFollowersAndPublicRepos(){
 		//given
-		int followers = 2;
-		int publicRepos = 2;
+		UserDTO userDTO = new UserDTO(1, "jan", "Jan", "User","fakeUrl", LocalDateTime.now(), 2, 2);
 
 		//when
-		String calculationMessage = calculationService.calculate(followers, publicRepos);
+		String calculationMessage = calculationService.calculate(userDTO);
 
 		//then
 		Assertions.assertThat(calculationMessage).isEqualTo("12.00");
