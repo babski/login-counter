@@ -37,7 +37,7 @@ public class CalculationServiceTest {
 		String calculationMessage = calculationService.calculate(userDTO);
 
 		//then
-		Assertions.assertThat(calculationMessage).isEqualTo("12.00");
+		Assertions.assertThat(calculationMessage).isEqualTo("12,00");
 	}
 
 }

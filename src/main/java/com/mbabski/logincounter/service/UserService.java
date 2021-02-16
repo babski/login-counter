@@ -4,7 +4,6 @@ import com.mbabski.logincounter.dto.ResponseDTO;
 import com.mbabski.logincounter.dto.UserDTO;
 import com.mbabski.logincounter.exception.UserNotFoundException;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
 @Slf4j
 public class UserService {
 
@@ -23,6 +21,14 @@ public class UserService {
 	CalculationService calculationService;
 
 	RequestCountingService requestCountingService;
+
+	RestTemplate restTemplate;
+
+	public UserService(CalculationService calculationService, RequestCountingService requestCountingService) {
+		this.calculationService = calculationService;
+		this.requestCountingService = requestCountingService;
+		this.restTemplate = new RestTemplate();
+	}
 
 	public ResponseDTO getResponseDto(String login) {
 		requestCountingService.incrementRequestCount(login);
@@ -34,7 +40,7 @@ public class UserService {
 
 	private UserDTO getUserDTO(String login) {
 		try {
-			ResponseEntity<UserDTO> response = new RestTemplate().getForEntity(BASE_URL + login, UserDTO.class);
+			ResponseEntity<UserDTO> response = restTemplate.getForEntity(BASE_URL + login, UserDTO.class);
 			return response.getBody();
 		} catch (HttpClientErrorException.NotFound e) {
 			log.error(String.format("User with login '%s' does not exist", login));

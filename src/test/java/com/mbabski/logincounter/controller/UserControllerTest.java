@@ -52,7 +52,7 @@ public class UserControllerTest {
 				.andExpect(jsonPath("$.login", is("octocat")))
 				.andExpect(jsonPath("$.name", is("The Octocat")))
 				.andExpect(jsonPath("$.type", is("User")))
-				.andExpect(jsonPath("$.calculations", is("0.02"))) //valid for 2021-01-25
+				.andExpect(jsonPath("$.calculations", is("0,02"))) //valid for 2021-01-25
 				.andExpect(jsonPath("$.avatar_url", is("https://avatars.githubusercontent.com/u/583231?v=4"))) //valid for 2021-01-25
 				.andExpect(jsonPath("$.created_at", is("2011-01-25T18:44:36")));
 	}
